@@ -14,18 +14,17 @@ set -e
 # Using flang as a WASM cross-compiler
 # https://github.com/serge-sans-paille/llvm-project/blob/feature/flang-wasm/README.wasm.md
 # https://github.com/conda-forge/flang-feedstock/pull/69
-micromamba install -p $BUILD_PREFIX \
-    conda-forge/label/llvm_rc::libllvm19=19.1.0.rc2 \
-    conda-forge/label/llvm_dev::flang=19.1.0.rc2 \
-    -y --no-channel-priority
-rm $BUILD_PREFIX/bin/clang # links to clang19
-ln -s $BUILD_PREFIX/bin/clang-18 $BUILD_PREFIX/bin/clang # links to emsdk clang
+# micromamba install -p $BUILD_PREFIX \
+#     conda-forge/label/llvm_rc::libllvm19=19.1.0.rc2 \
+#     conda-forge/label/llvm_dev::flang=19.1.0.rc2 \
+#     -y --no-channel-priority
+# rm $BUILD_PREFIX/bin/clang # links to clang19
+# ln -s $BUILD_PREFIX/bin/clang-18 $BUILD_PREFIX/bin/clang # links to emsdk clang
 
 # NOTE: a few of these tests check for specific symbols in the libraries,
 # however the objdump tool is not set up to handle wasm files.
 # Maybe this is why the checks fail.
 
-flsjdflj
 # Skip non-working checks
 export r_cv_header_zlib_h=yes # Otherwise the version check fails
 export r_cv_have_bzlib=yes
@@ -205,9 +204,7 @@ export FCFLAGS="$FFLAGS --target=wasm32-unknown-emscripten"
 
 # NOTE: the host and build systems are explicitly set to enable the cross-
 # compiling options even though it's not actually supported.
-# Otherwise, it assumes it's not cross-compiling.
-
-chmod +x ./configure
+# Otherwise, it assumes it's not cross-compiling. REQUIRED!!!
 
 emconfigure ./configure \
     --prefix=$PREFIX    \
@@ -227,6 +224,7 @@ emconfigure ./configure \
     --with-recommended-packages=no \
     --with-libdeflate-compression=no
 
+emmake make clean
 emmake make -j${CPU_COUNT}
 emmake make install
 
