@@ -21,6 +21,10 @@ set -e
 # rm $BUILD_PREFIX/bin/clang # links to clang19
 # ln -s $BUILD_PREFIX/bin/clang-18 $BUILD_PREFIX/bin/clang # links to emsdk clang
 
+# # NOTE: Taking the runtime lib from wasi to pass some of the fortran tests
+# mkdir -p $BUILD_PREFIX/lib/clang/19/lib/wasm32-unknown-emscripten/
+# cp libclang_rt.builtins-wasm32.a $BUILD_PREFIX/lib/clang/19/lib/wasm32-unknown-emscripten/libclang_rt.builtins.a
+
 # NOTE: a few of these tests check for specific symbols in the libraries,
 # however the objdump tool is not set up to handle wasm files.
 # Maybe this is why the checks fail.
@@ -61,6 +65,14 @@ export SHLIB_CFLAGS="-sSIDE_MODULE"
 #   MAIN_LD:       command used to link the main binary
 #   MAIN_LDFLAGS:  flags which are necessary for loading a main program which
 #                  will load shared objects (DLLs) at runtime
+export MAIN_LDFLAGS="-s WASM_BIGINT \
+    -s STACK_SIZE=5MB \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s EXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
+    -s FORCE_FILESYSTEM=1 \
+    -s INVOKE_RUN=0 \
+    -s MODULARIZE=1 \
+    -s EXPORT_NAME=R"
 #   CPICFLAGS:     special flags for compiling C code to be turned into a shared
 #                  object.
 #   FPICFLAGS:     special flags for compiling Fortran code to be turned into a
@@ -112,14 +124,7 @@ export CFLAGS="$CFLAGS -matomics -mbulk-memory"
 #   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
 #               nonstandard directory <lib dir>
 # https://emscripten.org/docs/tools_reference/settings_reference.html
-export LDFLAGS="-L$PREFIX/lib \
-    -s WASM_BIGINT \
-    -s STACK_SIZE=5MB \
-    -s ALLOW_MEMORY_GROWTH=1 \
-    -s EXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
-    -s FORCE_FILESYSTEM=1 \
-    -s INVOKE_RUN=0 \
-    -s MODULARIZE=1"
+export LDFLAGS="-L$PREFIX/lib"
 #   LIBS        libraries to pass to the linker, e.g. -l<library>
 export LIBS="-lFortranRuntime" # NOTE: Needed for external blas and lapack
 #   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
@@ -129,7 +134,7 @@ export CPPFLAGS="-I$PREFIX/include" # Otherwise can't find zlib.h
 #   FC          Fortran compiler command
 export FC=flang-new
 #   FCFLAGS     Fortran compiler flags
-export FCFLAGS="$FFLAGS --target=wasm32-unknown-emscripten"
+export FCFLAGS="--target=wasm32-unknown-emscripten -fPIC -O2"
 #   CXX         C++ compiler command
 #   CXXFLAGS    C++ compiler flags
 #   CXXCPP      C++ preprocessor
