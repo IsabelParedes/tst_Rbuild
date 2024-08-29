@@ -117,9 +117,9 @@ FC=flang-new
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-FFLAGS="-g -ffixed-form --target=wasm32-unknown-emscripten"
+FFLAGS="-g --target=wasm32-unknown-emscripten"
 ## Ditto for free-form Fortran.
-FCFLAGS="-g -ffree-form --target=wasm32-unknown-emscripten"
+## FCFLAGS=
 ## If just one of these is set, it is used for both.
 ## If both are unspecified, defaults to '-g -O2' for gfortran,
 ## otherwise '-g' if this is accepted, otherwise ''.
