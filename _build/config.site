@@ -17,7 +17,7 @@
 ### https://www.r-project.org/Licenses/
 
 ## By means of this file you can (also) provide default values for the
-## configuration process.  To set variables, uncomment the VAR=DEFAULT 
+## configuration process.  To set variables, uncomment the VAR=DEFAULT
 ## lines and set DEFAULT according to your needs.
 ## See etc/Renviron.in for further variables you may wish to set.
 
@@ -33,8 +33,8 @@
 ## Set the default behavior of R when ending a session
 ## Set this to one of '--save' or '--no-save' depending whether you
 ## want automatic saving of '.RData' or not.
-## Note that this applies to interactive and batch use, 
-## but NOT to the utility R CMD BATCH 
+## Note that this applies to interactive and batch use,
+## but NOT to the utility R CMD BATCH
 ## (which defaults to --save irrespective of this setting)
 ## R_BATCHSAVE=
 
@@ -44,16 +44,16 @@
 ## which runs the compiler, for example 'c99'.
 ## It is also necessary to set the architecture here, e.g. 'gcc -m32'.
 ## If this is a wrapper it should pass on --version to the real compiler.
-## CC=
+CC=emcc
 
 ## Debugging and optimization options for the C compiler.
 ## Use this to specify CFLAGS for the version of the C compiler
 ## specified above.
-## If unspecified, defaults to '-g -O2' for gcc, 
+## If unspecified, defaults to '-g -O2' for gcc,
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-## CFLAGS=
+CFLAGS="-g3 -sWASM_BIGINT"
 
 ## Ditto for a compiler that supports C17 features and not C23 ones.
 ## For example, 'CC17=gcc -std=gnu17', omit -Wstrict-prototypes from C17FLAGS.
@@ -90,29 +90,37 @@
 
 ## The following additional CFLAGS to be used only in the main
 ## compilation and only in building shared objects respectively.
-## For example, on some systems one needs 'MAIN_CFLAGS=-pg' when
+## For example, on some systems one needs 'MAIN_CFLAGS=-pg' when!
 ## profiling.
-## MAIN_CFLAGS=
-## SHLIB_CFLAGS=
+MAIN_CFLAGS="--pre-js ${RECIPE_DIR}/pre.js
+    -sMAIN_MODULE=1 \
+    -sSTACK_SIZE=5MB \
+    -sALLOW_MEMORY_GROWTH=1 \
+    -sEXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
+    -sFORCE_FILESYSTEM=1 \
+    -sINVOKE_RUN=0"
+    # -sMODULIRIZE=1 \
+    # -sEXPORT_NAME=R"
+SHLIB_CFLAGS="-sSIDE_MODULE=1"
 
 ## Header file search directory ('-IDIR') and any other miscellaneous
 ## options (such as defines) for the C preprocessor and compiler.
 ## If unset defaults to '-I/usr/local/include', with '-I/sw/include'
 ## prepended on systems using Fink with root '/sw'.
-## CPPFLAGS=
+CPPFLAGS="-I$PREFIX/include"
 
 ## The command which runs the Fortran compiler.
 ## Used for both fixed-form and free-form Fortran
 ## If this is a wrapper it should pass on --version to the real compiler.
-## FC=
+FC=flang-new
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-## FFLAGS=
+FFLAGS="-g -ffixed-form --target=wasm32-unknown-emscripten"
 ## Ditto for free-form Fortran.
-## FCFLAGS=
+FCFLAGS="-g -ffree-form --target=wasm32-unknown-emscripten"
 ## If just one of these is set, it is used for both.
-## If both are unspecified, defaults to '-g -O2' for gfortran, 
+## If both are unspecified, defaults to '-g -O2' for gfortran,
 ## otherwise '-g' if this is accepted, otherwise ''.
 ## Use these if the compiler needs flags such as --free, -qfixed and
 ## cannot determine which from the source-file extension.
@@ -156,12 +164,12 @@
 ## turned into a shared object.  This is typically something like
 ## '-fpic' or '-fPIC'.  If this variable is left unspecified an attempt
 ## is made to automatically detect the correct value.
-## CPICFLAGS=
+CPICFLAGS="-sSIDE_MODULE=1"
 
 ## The following variable can be used to provide any PIC flags for the
 ## Fortran compiler.  If this variable is left unspecified an
 ## attempt is made to automatically detect the correct value.
-## FPICFLAGS=
+FPICFLAGS="-fPIC"
 
 ## The following variable can be used to provide any PIE flags for the
 ## Fortran compiler.  Currently only needed when using gfortran on
@@ -201,7 +209,7 @@
 ## on macOS systems using Fink with root '/sw'.
 ## On some Linux 64-bit systems its default is -L/usr/local/lib64.
 ## If LIBnn is set it defaults to -L/usr/local/$LIBnn.
-## LDFLAGS=
+LDFLAGS="-L$PREFIX/lib"
 
 
 ## The command which runs the C++ compiler.
@@ -211,17 +219,17 @@
 ## and then looks under the names 'c++', 'g++', 'CC' and more OS-specific
 ## names (from autoconf).
 ## If this is a wrapper it should pass on --version to the real compiler.
-## CXX=
+CXX=em++
 
 ## Options for the C++ compiler.
-## CXXFLAGS=
+CXXFLAGS="-sWASM_BIGINT"
 
 ## Any special flags which must be used when compiling C++ code to be
 ## turned into a shared object.  If this variable is left unspecified
 ## an attempt is made to automatically detect the correct value.
-## CXXPICFLAGS=
+CXXPICFLAGS="-sSIDE_MODULE=1"
 
-## Option to specify the default C++ standard, 
+## Option to specify the default C++ standard,
 ## e.g. -std=c++14 or -std=gnu++14
 ## CXXSTD=
 
@@ -235,7 +243,7 @@
 ## containing object files from a C++ compiler.  This is usually
 ## automatically detected by configure, and anything set here will be in
 ## addition unless SHLIB_CXXLD is given.
-## SHLIB_CXXLDFLAGS=
+SHLIB_CXXLDFLAGS="-sSIDE_MODULE=1"
 
 ## Not used by R but configure can fail to find it, so set to
 ## "$CXX -E" if it does.
@@ -269,7 +277,7 @@
 ## against an external BLAS implementation.
 ## BLAS_LIBS=
 ## Use LAPACK_LIBS for all '-L' and '-l' options needed for linking
-## against an external LAPACK implementation.  
+## against an external LAPACK implementation.
 ## Note that (see R-admin) that our main intention is to allow a
 ## LAPACK-containing BLAS to be used, so this is rarely needed, and
 ## it is not used if the BLAS already contains LAPACK.
@@ -302,7 +310,7 @@
 ## CXX11=
 
 ## The 'standard' for the C++11 compiler, which is invoked as
-## $(CXX11) $(CXX11STD) for both compiling and linking DSOs/DLLs.  
+## $(CXX11) $(CXX11STD) for both compiling and linking DSOs/DLLs.
 ## '-std=gnu++11' and '-std=gnu++0x' are tried in turn by configure.
 ## followed by '-std=c++11' and '-std=c++0x'
 ## CXX11STD=
@@ -320,7 +328,7 @@
 ## CXX14=
 
 ## The 'standard' for the C++14 compiler, which is invoked as
-## $(CXX14) $(CXX14STD) for both compiling and linking DSOs/DLLs.  
+## $(CXX14) $(CXX14STD) for both compiling and linking DSOs/DLLs.
 ## '-std=gnu++14' and '-std=gnu++1y" are tried by configure, also
 ## '-std=c++14' and '-std=c++1y"
 ## CXX14STD=
@@ -338,7 +346,7 @@
 ## CXX17=
 
 ## The 'standard' for the C++17 compiler, which is invoked as
-## $(CXX17) $(CXX17STD) for both compiling and linking DSOs/DLLs.  
+## $(CXX17) $(CXX17STD) for both compiling and linking DSOs/DLLs.
 ## '-std=gnu++17' and '-std=gnu++1z" are tried by configure, also
 ## '-std=c++17' and '-std=c++1z"
 ## CXX17STD=
@@ -356,7 +364,7 @@
 ## CXX20=
 
 ## The 'standard' for the C++20 compiler, which is invoked as
-## $(CXX20) $(CXX20STD) for both compiling and linking DSOs/DLLs.  
+## $(CXX20) $(CXX20STD) for both compiling and linking DSOs/DLLs.
 ## '-std=gnu++20' and '-std=gnu++2a" are tried by configure, also
 ## '-std=c++20' and '-std=c++2a"
 ## CXX20STD=
@@ -374,7 +382,7 @@
 ## CXX23=
 
 ## The 'standard' for the C++23 compiler, which is invoked as
-## $(CXX23) $(CXX23STD) for both compiling and linking DSOs/DLLs.  
+## $(CXX23) $(CXX23STD) for both compiling and linking DSOs/DLLs.
 ## '-std=gnu++23' and '-std=gnu++2a" are tried by configure, also
 ## '-std=c++23' and '-std=c++2a"
 ## CXX23STD=
@@ -413,7 +421,7 @@
 ## PKG_CONFIG_LIBDIR=
 
 ## OpenMP settings.
-## The configure code is conservative about enabling OpenMP 
+## The configure code is conservative about enabling OpenMP
 ## so use can be forced here (or non-use if set but empty).
 ## For packages (note that SHLIB_OPENMP_CXXFLAGS is for CXX, not
 ## necessarily for CXX11/14/17/20/23).
@@ -452,15 +460,15 @@
 
 ## Commands which might need to be set for LTO builds
 ## Typical values for LTO are gcc-ar, gcc-nm and gcc-ranlib
-## AR=
-## NM=
-## RANLIB=
+AR=emar
+NM=llvm-nm
+RANLIB=emranlib
 ##
 ## The LTO macro, defaulting to -flto
 ## Could be e.g. -flto=8 for GCC or -flto=thin for clang.
-## LTO= 
+## LTO=
 ## Ditto for the Fortran compiler, defaulting to the value of LTO.
-## LTO_FC= 
+## LTO_FC=
 ##
 ## Flags for linking with LTO in addition to $(LTO), e.g. to
 ## parallelize ThinLTO or to change linker such as -fuse-ld=gold or
