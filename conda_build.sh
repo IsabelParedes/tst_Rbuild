@@ -70,9 +70,9 @@ export MAIN_LDFLAGS="-s WASM_BIGINT \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s EXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
     -s FORCE_FILESYSTEM=1 \
-    -s INVOKE_RUN=0 \
-    -s MODULARIZE=1 \
-    -s EXPORT_NAME=R"
+    -s INVOKE_RUN=0"
+    # -s MODULARIZE=1 \
+    # -s EXPORT_NAME=R"
 #   CPICFLAGS:     special flags for compiling C code to be turned into a shared
 #                  object.
 #   FPICFLAGS:     special flags for compiling Fortran code to be turned into a
