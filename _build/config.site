@@ -276,7 +276,7 @@ SHLIB_CXXLDFLAGS="-sSIDE_MODULE=1"
 ## BLAS and LAPACK settings
 ## Use BLAS_LIBS for all '-L' and '-l' options needed for linking
 ## against an external BLAS implementation.
-## BLAS_LIBS=
+BLAS_LIBS="-lFortranRuntime"
 ## Use LAPACK_LIBS for all '-L' and '-l' options needed for linking
 ## against an external LAPACK implementation.
 ## Note that (see R-admin) that our main intention is to allow a
