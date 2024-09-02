@@ -133,7 +133,7 @@ FFLAGS="-g --target=wasm32-unknown-emscripten"
 
 ## Additional libraries needed to link a shared object with FC,
 ## e.g. on x86 Solaris
-## FCLIBS_XTRA=
+# FCLIBS_XTRA=
 
 ## Options for safe compilation under the Fortran compiler.
 ## Use this to specify FFLAGS for the version of the compiler specified
@@ -165,7 +165,7 @@ FFLAGS="-g --target=wasm32-unknown-emscripten"
 ## turned into a shared object.  This is typically something like
 ## '-fpic' or '-fPIC'.  If this variable is left unspecified an attempt
 ## is made to automatically detect the correct value.
-CPICFLAGS="-sSIDE_MODULE=1"
+CPICFLAGS="-fPIC"
 
 ## The following variable can be used to provide any PIC flags for the
 ## Fortran compiler.  If this variable is left unspecified an
@@ -192,7 +192,7 @@ FPICFLAGS="-fPIC"
 ## On macOS, the default is
 ## -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup
 ## For other platforms, see configure.ac
-## SHLIB_LDFLAGS=
+SHLIB_LDFLAGS="-sSIDE_MODULE=1"
 
 ## ditto for a dynamic library: DYLIB_LDFLAGS defaults to SHLIB_LDFLAGS
 ## DYLIB_LD=
@@ -276,7 +276,7 @@ SHLIB_CXXLDFLAGS="-sSIDE_MODULE=1"
 ## BLAS and LAPACK settings
 ## Use BLAS_LIBS for all '-L' and '-l' options needed for linking
 ## against an external BLAS implementation.
-BLAS_LIBS="-lFortranRuntime"
+# BLAS_LIBS=
 ## Use LAPACK_LIBS for all '-L' and '-l' options needed for linking
 ## against an external LAPACK implementation.
 ## Note that (see R-admin) that our main intention is to allow a
@@ -522,3 +522,8 @@ RANLIB=emranlib
 
 ## The exception, looked for in /usr/xpg4/bin before the path
 ## SED=sed
+
+## Additional
+FLIBS_IN_SO="-lFortranRuntime"
+FLIBS="-lFortranRuntime"
+FCLIBS="-lFortranRuntime"

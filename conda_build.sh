@@ -30,16 +30,12 @@ set -e
 # Maybe this is why the checks fail.
 
 # Skip non-working checks
-export r_cv_header_zlib_h=yes # Otherwise the version check fails
+export r_cv_header_zlib_h=yes
 export r_cv_have_bzlib=yes
-# export ac_cv_lib_lzma_lzma_version_number=yes
-# export ac_cv_header_lzma_h=yes
 export r_cv_have_lzma=yes
 export r_cv_have_pcre2utf=yes
-# export r_cv_have_pcre832=yes
-# export r_cv_size_max=yes
-# export ac_cv_lib_z_inflateInit2_=yes
-# export ac_cv_lib_bz2_BZ2_bzlibVersion=yes
+export r_cv_size_max=yes
+
 
 # Not supported
 export ac_cv_have_decl_getrusage=no
@@ -61,24 +57,25 @@ export SHLIB_EXT=".so"
 cd _build
 echo "😈😈😈 Configuring R"
 
-# emconfigure ../configure \
-#     --prefix=$PREFIX    \
-#     --build="x86_64-conda-linux-gnu" \
-#     --host="wasm32-unknown-emscripten" \
-#     --enable-R-static-lib \
-#     --enable-BLAS-shlib=no \
-#     --with-cairo \
-#     --without-readline  \
-#     --without-x         \
-#     --enable-static  \
-#     --enable-java=no \
-#     --enable-R-profiling=no \
-#     --enable-byte-compiled-packages=no \
-#     --disable-rpath \
-#     --with-internal-tzcode \
-#     --with-recommended-packages=no \
-#     --with-libdeflate-compression=no
-
+emconfigure ../configure \
+    --prefix=$PREFIX    \
+    --build="x86_64-conda-linux-gnu" \
+    --host="wasm32-unknown-emscripten" \
+    --with-sysroot=$BUILD_PREFIX/opt/emsdk/upstream/emscripten/cache/sysroot \
+    --enable-R-static-lib \
+    --enable-BLAS-shlib \
+    --with-cairo \
+    --without-readline  \
+    --without-x         \
+    --enable-static  \
+    --enable-java=no \
+    --enable-R-profiling=no \
+    --enable-byte-compiled-packages=no \
+    --disable-rpath \
+    --disable-openmp \
+    --with-internal-tzcode \
+    --with-recommended-packages=no \
+    --with-libdeflate-compression=no
 
 
 echo "😈😈😈 Building R"
