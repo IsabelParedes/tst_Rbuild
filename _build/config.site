@@ -92,16 +92,7 @@ CFLAGS="-g3 -matomics -mbulk-memory" # Needed for context.c
 ## compilation and only in building shared objects respectively.
 ## For example, on some systems one needs 'MAIN_CFLAGS=-pg' when
 ## profiling.
-MAIN_CFLAGS="--pre-js ${RECIPE_DIR}/pre.js \
-    -sWASM_BIGINT \
-    -sMAIN_MODULE=1 \
-    -sSTACK_SIZE=5MB \
-    -sALLOW_MEMORY_GROWTH=1 \
-    -sEXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
-    -sFORCE_FILESYSTEM=1 \
-    -sINVOKE_RUN=0"
-    # -sMODULIRIZE=1 \
-    # -sEXPORT_NAME=R"
+# MAIN_CFLAGS=
 SHLIB_CFLAGS="-sSIDE_MODULE=1"
 
 ## Header file search directory ('-IDIR') and any other miscellaneous
@@ -159,7 +150,16 @@ FFLAGS="-g --target=wasm32-unknown-emscripten"
 ## configure, and anything set here will be in addition unless MAIN_LD
 ## is given.
 ## For example, one can set flags for profiling here.
-## MAIN_LDFLAGS=
+MAIN_LDFLAGS="--pre-js ${RECIPE_DIR}/pre.js \
+    -sWASM_BIGINT \
+    -sMAIN_MODULE=1 \
+    -sSTACK_SIZE=5MB \
+    -sALLOW_MEMORY_GROWTH=1 \
+    -sEXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY \
+    -sFORCE_FILESYSTEM=1 \
+    -sINVOKE_RUN=0"
+    # -sMODULIRIZE=1 \
+    # -sEXPORT_NAME=R"
 
 ## Any special flags which must be used when compiling C code to be
 ## turned into a shared object.  This is typically something like
