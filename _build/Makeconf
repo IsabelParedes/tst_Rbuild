@@ -39,7 +39,7 @@ FLIBS = -lFortranRuntime
 ## needed for some earlier Solaris compilers
 FLIBS_IN_SO = -lFortranRuntime
 FPICFLAGS = -fPIC
-FPIEFLAGS = -fPIE
+FPIEFLAGS = 
 FC = flang-new
 GETWD = /usr/bin/pwd
 GZIP = --best
@@ -63,10 +63,10 @@ LIBnn = lib
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 ## AFAICS unused
 LN_S = ln -s
-MAIN_CFLAGS = --pre-js /home/ihuicatl/Repos/Packaging/emscripten-forge-recipes/recipes/recipes_emscripten/r-base/pre.js     -sWASM_BIGINT     -sMAIN_MODULE=1     -sSTACK_SIZE=5MB     -sALLOW_MEMORY_GROWTH=1     -sEXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY     -sFORCE_FILESYSTEM=1     -sINVOKE_RUN=0
+MAIN_CFLAGS = 
 MAIN_FFLAGS = 
 MAIN_LD = $(CC)# $(CFLAGS) $(CPICFLAGS) 
-MAIN_LDFLAGS = -pthread  # -Wl,-bE:$(top_builddir)/etc/R.exp
+MAIN_LDFLAGS = --pre-js /home/ihuicatl/Repos/Packaging/emscripten-forge-recipes/recipes/recipes_emscripten/r-base/pre.js     -sWASM_BIGINT     -sMAIN_MODULE=1     -sSTACK_SIZE=5MB     -sALLOW_MEMORY_GROWTH=1     -sEXPORTED_RUNTIME_METHODS=callMain,FS,ENV,getEnvStrings,TTY     -sFORCE_FILESYSTEM=1     -sINVOKE_RUN=0   -pthread  # -Wl,-bE:$(top_builddir)/etc/R.exp
 MAIN_LINK = $(MAIN_LD) $(MAIN_LDFLAGS) $(LIBR0) $(LDFLAGS)
 ## need this for bootstrapping
 MKINSTALLDIRS = /bin/sh $(top_srcdir)/src/scripts/mkinstalldirs.in
