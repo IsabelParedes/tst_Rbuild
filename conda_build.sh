@@ -61,7 +61,6 @@ emconfigure ../configure \
     --prefix=$PREFIX    \
     --build="x86_64-conda-linux-gnu" \
     --host="wasm32-unknown-emscripten" \
-    --with-sysroot=$BUILD_PREFIX/opt/emsdk/upstream/emscripten/cache/sysroot \
     --enable-R-static-lib \
     --enable-BLAS-shlib \
     --with-cairo \
@@ -77,15 +76,25 @@ emconfigure ../configure \
     --with-recommended-packages=no \
     --with-libdeflate-compression=no
 
+# Remove the -lFortranRuntime from the LIBS variable to avoid double linking
+line=$(grep "^LIBS" Makeconf)
+modified_line=${line/-lFortranRuntime /}
+echo "## Overriding LIBS variable" >> Makeconf
+echo $modified_line >> Makeconf
 
-echo "😈😈😈 Building R"
+
+
+echo "😈😈😈 Cleaning R"
 emmake make clean
+echo "😈😈😈 Building R"
 emmake make -j${CPU_COUNT}
-# emmake make install
 
-# # NOTE: bin/R is a shell wrapper for the R binary (found in lib/R/bin/exec/R)
-# # Manually copying the R.wasm file
-# cp src/main/R.* $PREFIX/lib/R/bin/exec/
+echo "😈😈😈 Installing R"
+emmake make install
 
-# # and Rscript (also has shell wrapper)
-# cp src/unix/Rscript.wasm $PREFIX/lib/R/bin/
+# NOTE: bin/R is a shell wrapper for the R binary (found in lib/R/bin/exec/R)
+# Manually copying the R.wasm file
+cp src/main/R.* $PREFIX/lib/R/bin/exec/
+
+# and Rscript (also has shell wrapper)
+cp src/unix/Rscript.wasm $PREFIX/lib/R/bin/
